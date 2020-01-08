@@ -751,3 +751,351 @@ int main() {
 
 	return 0;
 }
+
+
+* 11053번 : https://www.acmicpc.net/problem/11053
+
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+int main() {
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for (int i=0; i<n; i++) {
+        cin >> a[i];
+    }
+    vector<int> d(n);
+    for (int i=0; i<n; i++) {
+        d[i] = 1;
+        for (int j=0; j<i; j++) {
+            if (a[j] < a[i] && d[j]+1 > d[i]) {
+                d[i] = d[j]+1;
+            }
+        }
+    }
+    
+    cout << *max_element(d.begin(),d.end()) << '\n';
+    return 0;
+}
+
+&
+
+#include <cstdio>
+
+int d[1001];
+int a[1001];
+
+int main() {
+	int n;
+	scanf("%d", &n);
+
+	for (int i = 1; i <= n; i++) {
+		scanf("%d", &a[i]);
+	}
+	for (int i = 1; i <= n; i++) {
+		d[i] = 1;
+		for (int j = 1; j < i; j++) {
+			if (a[j] < a[i] && d[i] < d[j] + 1) {
+				d[i] = d[j] + 1;
+			}
+		}
+	}
+
+	int ans = d[1];
+	for (int i = 1; i <= n; i++) {
+		if (ans < d[i]) {
+			ans = d[i];
+		}
+	}
+	printf("%d\n", ans);
+
+	return 0;
+
+}
+
+
+11055번 : https://www.acmicpc.net/problem/11055
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<int> a(n);
+	vector<int> d(n);
+
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+	}
+
+	for (int i = 0; i < n; i++) {
+		d[i] = a[i];
+		for (int j = 0; j < i; j++) {
+			if (a[j] < a[i] && d[j] + a[i] > d[i]) {
+				d[i] = d[j] + 1;
+			}
+		}
+	}
+
+	cout << *max_element(d.begin(), d.end()) << endl;
+	return 0;
+}
+
+11722번 : https://www.acmicpc.net/problem/11722
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+int main() {
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    vector<int> d(n);
+    for (int i = 0; i < n; i++) {
+        d[i] = 1;
+        for (int j = 0; j < i; j++) {
+            if (a[j] > a[i] && d[j] + 1 > d[i]) {
+                d[i] = d[j] + 1;
+            }
+        }
+    }
+
+    cout << *max_element(d.begin(), d.end()) << '\n';
+    return 0;
+}
+
+#include <cstdio>
+int a[1001];
+int d[1001];
+int main() {
+    int n;
+    scanf("%d",&n);
+    for (int i=1; i<=n; i++) {
+        scanf("%d",&a[i]);
+    }
+    for (int i=n; i>=1; i--) {
+        d[i] = 1;
+        for (int j=i+1; j<=n; j++) {
+            if (a[i] > a[j] && d[i] < d[j]+1) {
+                d[i] = d[j]+1;
+            }
+        }
+    }
+    int ans = d[1];
+    for (int i=2; i<=n; i++) {
+        if (ans < d[i]) {
+            ans = d[i];
+        }
+    }
+    printf("%d\n",ans);
+    return 0;
+}
+
+* 11054번 : https://www.acmicpc.net/problem/11054
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+int main() {
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for (int i=0; i<n; i++) {
+        cin >> a[i];
+    }
+    vector<int> d(n);
+    vector<int> d2(n);
+    for (int i=0; i<n; i++) {
+        d[i] = 1;
+        for (int j=0; j<i; j++) {
+            if (a[j] < a[i] && d[j]+1 > d[i]) {
+                d[i] = d[j]+1;
+            }
+        }
+    }
+    for (int i=n-1; i>=0; i--) {
+        d2[i] = 1;
+        for (int j=i+1; j<n; j++) {
+            if (a[i] > a[j] && d2[j]+1 > d2[i]) {
+                d2[i] = d2[j]+1;
+            }
+        }
+    }
+    int ans = 0;
+    for (int i=0; i<n; i++) {
+        if (ans < d[i]+d2[i]-1) {
+            ans = d[i]+d2[i]-1;
+        }
+    }
+
+    cout << ans << '\n';
+    return 0;
+}
+
+1912번 : https://www.acmicpc.net/problem/1912
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> a(n);
+
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    vector<int> d(n);
+
+    for (int i = 0; i < n; i++) {
+        d[i] = a[i];
+        if (i == 0) continue; // 벡터 범위 주의
+        if (d[i] < d[i - 1] + a[i]) {
+            d[i] = d[i - 1] + a[i];
+        }
+    }
+
+    cout << *max_element(d.begin(), d.end()) << endl;
+
+    return 0;
+
+}
+
+2579번 : https://www.acmicpc.net/problem/2579
+O(N)
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<long> a(n+1);
+	vector<long> d(n+1);
+
+	a[0] = 0;
+	for (int i = 1; i <= n; i++) {
+		cin >> a[i];
+	}
+
+	d[0] = a[0];
+	d[1] = a[1];
+	d[2] = a[1] + a[2];
+
+	for (int i = 3; i <= n; i++) {
+		d[i] = max(d[i - 3] + a[i - 1] + a[i], d[i - 2] + a[i]);
+	}
+
+	cout << d[n] << endl;
+	return 0;
+}
+
+2차원 구현
+굳이..?
+
+#include <stdio.h>
+#define max(a,b) (((a)>(b))?(a):(b))
+int a[301];
+int d[301][3];
+int main() {
+    int n;
+    scanf("%d",&n);
+    for (int i=1; i<=n; i++) {
+        scanf("%d",&a[i]);
+    }
+    d[1][1] = a[1];
+    for (int i=2; i<=n; i++) {
+        d[i][2] = d[i-1][1] + a[i];
+        d[i][1] = max(d[i-2][1], d[i-2][2]) + a[i];
+    }
+    printf("%d\n",max(d[n][1], d[n][2]));
+    return 0;
+}
+
+1699번 : https://www.acmicpc.net/problem/1699
+O(N*root(N))
+
+#include <iostream>
+using namespace std;
+int d[100001];
+int main() {
+    int n;
+    cin >> n;
+    for (int i=1; i<=n; i++) {
+        d[i] = i;
+        for (int j=1; j*j <= i; j++) {
+            if (d[i] > d[i-j*j]+1) {
+                d[i] = d[i-j*j]+1;
+            }
+        }
+    }
+    cout << d[n] << '\n';
+    return 0;
+}
+
+2133번 : https://www.acmicpc.net/problem/2133
+*이전거 X 나타낼수 있는 개수
+
+#include <iostream>
+using namespace std;
+long long d[31];
+int main(){
+    int n;
+    cin >> n;
+    d[0] = 1;
+    for (int i=2; i<=n; i+=2) {
+        d[i] = d[i-2]*3;
+        for (int j=i-4; j>=0; j-=2) {
+            d[i] += d[j]*2;
+        }
+    }
+    cout << d[n] << '\n';
+    return 0;
+}
+
+9461번 : https://www.acmicpc.net/problem/9461
+* 범위가 틀려서 틀릴수도 있다.
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+long long p[101];
+
+int main() {
+	int t;
+	cin >> t;
+	
+	
+	while (t--) {
+		int n;
+		cin >> n;
+		for (int i = 1; i <= n; i++) {
+			if (i == 1 || i == 2 || i == 3) {
+				p[i] = 1;
+				continue;
+			}
+			p[i] = p[i - 2] + p[i - 3];
+		}
+		cout << p[n] << endl;
+	}
+	return 0;
+}
