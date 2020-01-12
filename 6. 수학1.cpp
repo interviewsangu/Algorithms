@@ -499,3 +499,103 @@ int main() {
     }
     return 0;
 }
+
+
+
+* 소인수분해
+- 정수 N을 소수의 곱으로 분해
+- 소수를 구하지 않고 해결 가능
+- N을 소인수분해 했을 때, 나타날 수 있는 인수 중 가장 큰 값은 루트N이다.
+- 따라서 2부터 루트N까지 for문을 돌면서
+- N을 나눌 수 있으면, 나눌 수 없을 때 까지 계속해서 나누면 된다.
+for(int i=2; i*i <=n; i++){
+	while(n%i == 0){
+		printf("%d\n", i);
+		n /= i;
+	}
+}
+if(n>1) printf("%d\n",);
+
+11653번 : https://www.acmicpc.net/problem/11653
+
+#include <cstdio>
+
+int main() {
+	int n;
+	scanf("%d", &n);
+	for (int i = 2; i * i <= n; i++) {
+		while (n % i == 0) {
+			printf("%d\n", i);
+			n /= i;
+		}
+	}
+	if (n > 1) {
+		printf("%d\n", n);
+	}
+	return 0;
+}
+
+10872번 : https://www.acmicpc.net/problem/10872
+
+#include <cstdio>
+
+int main() {
+	int n;
+	scanf("%d",&n);
+	long long ans = 1;
+	for (int i = 2; i <= n; i++) {
+		ans *= i;
+	}
+	printf("%lld\n", ans);
+	return 0;
+}
+
+- 다른 구현
+#include <iostream>
+using namespace std;
+int factorial(int n) {
+    if (n == 0) {
+        return 1;
+    } else {
+        return n * factorial(n-1);
+    }
+}
+int main() {
+    int n;
+    cin >> n;
+    cout << factorial(n) << '\n';
+    return 0;
+}
+
+1676번 : https://www.acmicpc.net/problem/1676
+- 소인수 분해 해서 5의 개수를 세면 되겠네
+#include <iostream>
+using namespace std;
+int main() {
+    int ans = 0;
+    int n;
+    cin >> n;
+    for (int i=5; i<=n; i*=5) {
+        ans += n/i;
+    }
+    cout << ans << '\n';
+    return 0;
+}
+
+#include <cstdio>
+
+int main() {
+	int n;
+	scanf("%d",&n);
+	int cnt = 0;
+	int temp;
+	for (int i = 1; i <= n; i++) {
+		temp = i;
+		while (temp % 5 == 0) {
+			cnt += 1;
+			temp = temp / 5;
+		}
+	}
+	printf("%d\n", cnt);
+	return 0;
+}
