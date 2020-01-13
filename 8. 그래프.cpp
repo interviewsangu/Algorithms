@@ -348,3 +348,223 @@ int main() {
 * 연결 요소(Connetcted Component)
 - 나누어진 각각의 그래프를 연결 요소라고 한다.
 - 연결 요소에 속한 모든 정점을 연결하는 경로가 있어야 한다.
+- 또, 다른 연결 요소에 속한 정점과 연결하는 경로가 있으면 안된다.
+	    
+11724번 : https://www.acmicpc.net/problem/11724
+
+#include <cstdio>
+#include <vector>
+using namespace std;
+vector<int> a[1001];
+bool check[1001];
+void dfs(int node) {
+	check[node] = true;
+	for (int i = 0; i < a[node].size(); i++) {
+		int next = a[node][i];
+		if (check[next] == false) {
+			dfs(next);
+		}
+	}
+}
+int main() {
+	int v, e;
+	scanf("%d %d", & v, &e);
+	for (int i = 0; i < e; i++) {
+		int u, v;
+		scanf("%d %d", &u, &v);
+		a[u].push_back(v);
+		a[v].push_back(u);
+	}
+	int components = 0;
+	for (int i = 1; i <= v; i++) {
+		if (check[i] == false) {
+			dfs(i);
+			components += 1;
+		}
+	}
+	printf("%d\n", components);
+	return 0;
+}
+
+* 이분 그래프
+- 그래프를 두개로 나눌 수 있으면 이분 그래프라고 한다.
+- 한 그룹에 속해 있는 정점끼리 연결된 간선이 없어야 한다.
+- 모든 간선의 한 끝 점은 다른 그룹에 속한다.
+	
+1707번 : https://www.acmicpc.net/problem/1707
+
+#include <cstdio>
+#include <vector>
+#include <cstring>
+#include <algorithm>
+using namespace std;
+vector<int> a[20001];
+int check[20001];
+void dfs(int node, int c) {
+	check[node] = c;
+	for (int i = 0; i < a[node].size(); i++) {
+		int next = a[node][i];
+		if (check[next] == 0) {
+			dfs(next, 3-c);
+		}
+	}
+}
+int main() {
+	int k;
+	scanf("%d\n", &k);
+	while (k--) {
+		int v, e;
+		scanf("%d %d", &v, &e);
+		for (int i = 1; i <= v; i++) {
+			a[i].clear();
+			check[i] = 0;
+		}
+		for (int i = 0; i < e; i++) {
+			int u, v;
+			scanf("%d %d", &u, &v);
+			a[u].push_back(v);
+			a[v].push_back(u);
+		}
+		for (int i = 1; i <= v; i++) {
+			if (check[i] == 0) {
+				dfs(i, 1);
+			}
+		}
+		bool ok = true;
+		for (int i = 1; i <= v; i++) {
+			for (int j = 0; j < a[i].size(); j++) {
+				int l = a[i][j];
+				if (check[i] == check[l]) {
+					ok = false;
+				}
+			}
+		}
+		printf("%s\n", ok ? "YES" : "NO");
+	}
+	return 0;
+}
+
+- dfs가 bool을 반환 하는 경우의 구현
+#include <cstdio>
+#include <algorithm>
+#include <cstring>
+#include <vector>
+#include <queue>
+using namespace std;
+vector<int> a[20001];
+int color[20001];
+bool dfs(int node, int c) {
+    color[node] = c;
+    for (int i=0; i<a[node].size(); i++) {
+        int next = a[node][i];
+        if (color[next] == 0) {
+            if (dfs(next, 3-c) == false) {
+                return false;
+            }
+        } else if (color[next] == color[node]) {
+            return false;
+        }
+    }
+    return true;
+}
+int main() {
+    int t;
+    scanf("%d\n",&t);
+    while (t--) {
+        int n, m;
+        scanf("%d %d",&n,&m);
+        for (int i=1; i<=n; i++) {
+            a[i].clear();
+            color[i] = 0;
+        }
+        for (int i=0; i<m; i++) {
+            int u,v;
+            scanf("%d %d",&u,&v);
+            a[u].push_back(v);
+            a[v].push_back(u);
+        }
+        bool ok = true;
+        for (int i=1; i<=n; i++) {
+            if (color[i] == 0) {
+                if (dfs(i, 1) == false) {
+                    ok = false;
+                }
+            }
+        }
+        printf("%s\n",ok ? "YES" : "NO");
+    }
+    return 0;
+}
+
+10451번 : https://www.acmicpc.net/problem/10451
+
+- 재귀 구현
+#include <cstdio>
+int a[1001];
+bool check[1001];
+void dfs(int node) {
+	check[node] = true;
+	if (check[a[node]] == false) {
+		dfs(a[node]);
+	}
+	return;
+}
+
+int main() {
+	int t;
+	scanf("%d\n", &t);
+	while (t--) {
+		int v;
+		scanf("%d\n", &v);
+		int ans = 0;
+		for (int i = 1; i <= v; i++) {
+			scanf("%d", &a[i]);
+			check[i] = false; // 초기화!!!!!!
+		}
+		for (int i = 1; i <= v; i++) {
+			if (check[i] == false) {
+				dfs(i);
+				ans += 1;
+			}
+		}
+		printf("%d\n", ans);
+	}
+	return 0;
+}
+
+- 반복 구현
+#include <cstdio>
+int a[1001];
+bool check[1001];
+void dfs(int node) {
+	check[node] = true;
+	int next;
+	next = a[node];
+	while (check[next] == false) {
+		check[next] = true;
+		next = a[next];
+	}
+}
+
+int main() {
+	int t;
+	scanf("%d\n", &t);
+	while (t--) {
+		int v;
+		scanf("%d\n", &v);
+		int ans = 0;
+		for (int i = 1; i <= v; i++) {
+			scanf("%d", &a[i]);
+			check[i] = false; // 초기화!!!!!!
+		}
+		for (int i = 1; i <= v; i++) {
+			if (check[i] == false) {
+				dfs(i);
+				ans += 1;
+			}
+		}
+		printf("%d\n", ans);
+	}
+	return 0;
+}
+
