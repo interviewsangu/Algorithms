@@ -568,3 +568,341 @@ int main() {
 	return 0;
 }
 
+2331번 : https://www.acmicpc.net/problem/2331
+
+#include <iostream>
+using namespace std;
+int check[1000000];
+int pow(int x, int p) {
+    int ans = 1;
+    for (int i=0; i<p; i++) {
+        ans = ans * x;
+    }
+    return ans;
+}
+int next(int a, int p) {
+    int ans = 0;
+    while (a > 0) {
+        ans += pow(a%10, p);
+        a /= 10;
+    }
+    return ans;
+}
+int length(int a, int p, int cnt) {
+    if (check[a] != 0) {
+        return check[a]-1;
+    }
+    check[a] = cnt;
+    int b = next(a, p);
+    return length(b, p, cnt+1);
+}
+int main() {
+    int a, p;
+    cin >> a >> p;
+    cout << length(a, p, 1) << '\n';
+    return 0;
+}
+
+9466번 : https://www.acmicpc.net/problem/9466
+
+- 재귀 구현
+#include <cstdio>
+
+int a[100001];
+int d[100001];
+int s[100001];
+int n;
+int dfs(int x, int cnt, int& step) {
+	if (d[x] != 0) {
+		if (step != s[x]) {
+			return 0;
+		}
+		return cnt - d[x];
+	}
+	d[x] = cnt;
+	s[x] = step;
+	return dfs(a[x], cnt + 1, step);
+}
+
+int main() {
+	int t;
+	scanf("%d", &t);
+	while (t--) {
+		scanf("%d", &n);
+		for (int i = 1; i <= n; i++) {
+			scanf("%d", &a[i]);
+			d[i] = 0;
+			s[i] = 0;
+		}
+		int ans = 0;
+		for (int i = 1; i <= n; i++) {
+			if (d[i] == 0) {
+				ans += dfs(i, 1, i);
+			}
+		}
+		printf("%d\n", n - ans);
+	}
+	return 0;
+}
+
+- 비재귀 구현
+
+#include <cstdio>
+
+int a[100001];
+int d[100001];
+int s[100001];
+int n;
+int dfs(int x, int cnt, int& step) {
+	while (true) {
+		if (d[x] != 0) {
+			if (s[x] != step) {
+				return 0;
+			}
+			return cnt - d[x];
+		}
+		d[x] = cnt;
+		s[x] = step;
+		x = a[x];
+		cnt++;
+	}
+}
+
+int main() {
+	int t;
+	scanf("%d", &t);
+	while (t--) {
+		scanf("%d", &n);
+		for (int i = 1; i <= n; i++) {
+			scanf("%d", &a[i]);
+			d[i] = 0;
+			s[i] = 0;
+		}
+		int ans = 0;
+		for (int i = 1; i <= n; i++) {
+			if (d[i] == 0) {
+				ans += dfs(i, 1, i);
+			}
+		}
+		printf("%d\n", n - ans);
+	}
+	return 0;
+}
+
+* Flood Fill; 어떤 위치와 연결된 모든 위치를 찾는 알고리즘
+
+2667번 : https://www.acmicpc.net/problem/2667
+
+- bfs
+
+#include <cstdio>
+#include <algorithm>
+#include <queue>
+using namespace std;
+int a[30][30];
+int d[30][30];
+int ans[25 * 25];
+int n;
+int dx[] = { 0, 0, 1, -1 };
+int dy[] = { 1, -1, 0, 0 };
+void bfs(int x, int y, int cnt) {
+	queue<pair<int, int>> q;
+	q.push(make_pair(x, y));
+	d[x][y] = cnt;
+	while (!q.empty()) {
+		x = q.front().first;
+		y = q.front().second;
+		q.pop();
+		for (int k = 0; k < 4; k++) {
+			int nx = x + dx[k];
+			int ny = y + dy[k];
+			if (0 <= nx && nx < n && 0 <= ny && ny < n) {
+				if (a[nx][ny] == 1 && d[nx][ny] == 0) {
+					q.push(make_pair(nx, ny));
+					d[nx][ny] = cnt;
+				}
+			}
+		}
+	}
+}
+
+int main() {
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			scanf("%1d", &a[i][j]);
+		}
+	}
+	int cnt = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (a[i][j] == 1 && d[i][j] == 0) {
+				bfs(i, j, ++cnt);
+			}
+		}
+	}
+	printf("%d\n", cnt);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			ans[d[i][j]] += 1;
+		}
+	}
+	sort(ans + 1, ans + cnt + 1);
+	for (int i = 1; i <= cnt; i++) {
+		printf("%d\n", ans[i]);
+	}
+	return 0;
+}
+
+- dfs
+
+#include <cstdio>
+#include <algorithm>
+#include <queue>
+using namespace std;
+int a[30][30];
+int d[30][30];
+int dx[] = {0,0,1,-1};
+int dy[] = {1,-1,0,0};
+int n;
+int ans[25*25];
+void dfs(int x, int y, int cnt) {
+    d[x][y] = cnt;
+    for (int k=0; k<4; k++) {
+        int nx = x+dx[k];
+        int ny = y+dy[k];
+        if (0 <= nx && nx < n && 0 <= ny && ny < n) {
+            if (a[nx][ny] == 1 && d[nx][ny] == 0) {
+                dfs(nx, ny, cnt);
+            }
+        }
+    }
+}
+int main() {
+    scanf("%d",&n);
+    for (int i=0; i<n; i++) {
+        for (int j=0; j<n; j++) {
+            scanf("%1d",&a[i][j]);
+        }
+    }
+    int cnt = 0;
+    for (int i=0; i<n; i++) {
+        for (int j=0; j<n; j++) {
+            if (a[i][j] == 1 && d[i][j] == 0) {
+                dfs(i, j, ++cnt);
+            }
+        }
+    }
+    printf("%d\n",cnt);
+    for (int i=0; i<n; i++) {
+        for (int j=0; j<n; j++) {
+            ans[d[i][j]]+=1;
+        }
+    }
+    sort(ans+1, ans+cnt+1);
+    for (int i=1; i<=cnt; i++) {
+        printf("%d\n",ans[i]);
+    }
+    return 0;
+}
+
+4963번 : https://www.acmicpc.net/problem/4963
+
+- dfs
+
+#include <cstdio>
+int a[100][100];
+int d[100][100];
+int m, n;
+int dx[] = { 0,0,1,-1,1,1,-1,-1 };
+int dy[] = { 1,-1,0,0,1,-1,1,-1 };
+void dfs(int x, int y, int cnt) {
+    d[x][y] = cnt;
+    for (int i = 0; i < 8; i++) {
+        int nx = x + dx[i];
+        int ny = y + dy[i];
+        if (nx >= 0 && nx < n && 0 <= ny && ny < m) {
+            if (a[nx][ny] == 1 && d[nx][ny] == 0) {
+                dfs(nx, ny, cnt);
+            }
+        }
+
+    }
+}
+int main() {
+    while (true) {
+        scanf("%d %d", &m, &n);
+        if (n == 0 && m == 0) break;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                scanf("%1d", &a[i][j]);
+                d[i][j] = 0;
+            }
+        }
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (a[i][j] == 1 && d[i][j] == 0) {
+                    dfs(i, j, ++cnt);
+                }
+            }
+        }
+        printf("%d\n", cnt);
+    }
+    return 0;
+}
+
+- bfs 구현
+
+#include <cstdio>
+#include <algorithm>
+#include <queue>
+using namespace std;
+int a[100][100];
+int d[100][100];
+int dx[] = {0,0,1,-1,1,1,-1,-1};
+int dy[] = {1,-1,0,0,1,-1,1,-1};
+int n,m;
+void bfs(int x, int y, int cnt) {
+    queue<pair<int,int>> q;
+    q.push(make_pair(x,y));
+    d[x][y] = cnt;
+    while (!q.empty()) {
+        x = q.front().first;
+        y = q.front().second;
+        q.pop();
+        for (int k=0; k<8; k++) {
+            int nx = x+dx[k];
+            int ny = y+dy[k];
+            if (0 <= nx && nx < n && 0 <= ny && ny < m) {
+                if (a[nx][ny] == 1 && d[nx][ny] == 0) {
+                    q.push(make_pair(nx,ny));
+                    d[nx][ny] = cnt;
+                }
+            }
+        }
+    }
+}
+int main() {
+    while (true) {
+        scanf("%d %d",&m,&n);
+        if (n == 0 && m == 0) break;
+        for (int i=0; i<n; i++) {
+            for (int j=0; j<m; j++) {
+                scanf("%1d",&a[i][j]);
+                d[i][j] = 0;
+            }
+        }
+        int cnt = 0;
+        for (int i=0; i<n; i++) {
+            for (int j=0; j<m; j++) {
+                if (a[i][j] == 1 && d[i][j] == 0) {
+                    bfs(i, j, ++cnt);
+                }
+            }
+        }
+        printf("%d\n",cnt);
+    }
+    return 0;
+}
+
