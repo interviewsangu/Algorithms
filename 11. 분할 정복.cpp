@@ -286,3 +286,245 @@ int main() {
 1780번 : https://www.acmicpc.net/problem/1780
 함수를 어떻게 만들어야 할까요
 
+#include <cstdio>
+int a[3000][3000];
+int cnt[3];
+bool same(int x, int y, int n) {
+    for (int i=x; i<x+n; i++) {
+        for (int j=y; j<y+n; j++) {
+            if (a[x][y] != a[i][j]) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+void solve(int x, int y, int n) {
+    if (same(x, y, n)) {
+        cnt[a[x][y]+1] += 1;
+        return;
+    }
+    int m = n/3;
+    for (int i=0; i<3; i++) {
+        for (int j=0; j<3; j++) {
+            solve(x+i*m, y+j*m, m);
+        }
+    }
+}
+int main() {
+    int n;
+    scanf("%d",&n);
+    for (int i=0; i<n; i++) {
+        for (int j=0; j<n; j++) {
+            scanf("%d",&a[i][j]);
+        }
+    }
+    solve(0, 0, n);
+    for (int i=0; i<3; i++) {
+        printf("%d\n",cnt[i]);
+    }
+    return 0;
+}
+
+*11729번 : https://www.acmicpc.net/problem/11729
+
+#include <cstdio>
+void solve(int n, int x, int y) {
+	if (n == 0) {
+		return;
+	}
+	solve(n - 1, x, 6 - x - y);
+	printf("%d %d\n", x, y);
+	solve(n - 1, 6 - x - y, y);
+}
+int main() {
+	int n;
+	scanf("%d", &n);
+	printf("%d\n", (1 << n) - 1);
+	solve(n, 1, 3);
+	return 0;
+}
+
+* 2263번 : https://www.acmicpc.net/problem/2263
+
+#include <cstdio>
+int inorder[100000];
+int postorder[100000];
+int position[100001];
+void solve(int in_start, int in_end, int post_start, int post_end) {
+    if (in_start > in_end || post_start > post_end) return;
+    int root = postorder[post_end];
+    printf("%d ",root);
+    int p = position[root];
+    
+    // inorder:   in_start p in_end
+    // postorder: post_start post_end
+    // left: p-in_start
+    // right: in_end-p
+    int left = p-in_start;
+    solve(in_start, p-1, post_start, post_start + left - 1);
+    solve(p+1, in_end, post_start+left, post_end-1);
+}
+int main() {
+    int n;
+    scanf("%d",&n);
+    for (int i=0; i<n; i++) scanf("%d",&inorder[i]);
+    for (int i=0; i<n; i++) scanf("%d",&postorder[i]);
+    for (int i=0; i<n; i++) {
+        position[inorder[i]] = i;
+    }
+    solve(0, n-1, 0, n-1);
+    return 0;
+}
+
+* 1992번 : https://www.acmicpc.net/problem/1992
+
+#include <cstdio>
+int a[64][64];
+bool same(int x, int y, int n) {
+	for (int i = x; i < x+n; i++) {
+		for (int j = y; j < y+n; j++) {
+			if (a[x][y] != a[i][j])
+				return false;
+		}
+	}
+	return true;
+}
+void solve(int x, int y, int n) {
+	if (same(x, y, n)) {
+		printf("%d", a[x][y]);
+	}
+	else {
+		printf("(");
+		int m = n / 2;
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				solve(x + i * m, y + j * m, m);
+			}
+		}
+		printf(")");
+	}
+}
+int main() {
+	int n;
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			scanf("%1d", &a[i][j]);
+		}
+	}
+	solve(0, 0, n);
+	return 0;
+}
+
+2447번, **2448번** : https://www.acmicpc.net/problem/2447
+
+#include <iostream>
+using namespace std;
+char star[3000][3000];
+void solve(int x, int y, int n) {
+	if (n == 1) {
+		star[x][y] = '*';
+		return;
+	}
+	int m = n / 3;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			if (i == 1 && j == 1) continue;
+			solve(x + m * i, y + m * j, m);
+			}
+		}
+	return;
+}
+int main() {
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			star[i][j] = ' ';
+		}
+	}
+	solve(0, 0, n);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			printf("%c", star[i][j]);
+		}
+		printf("\n");
+	}
+	return 0;
+}
+
+* 1074번 : https://www.acmicpc.net/problem/1074
+
+#include <iostream>
+using namespace std;
+int power2(int k) {
+    return (1 << k);
+}
+int solve(int n, int r, int c) {
+    if (n == 1) {
+        return 2 * r + c;
+    }
+    else {
+        if (r < power2(n - 1)) {
+            if (c < power2(n - 1)) {
+                return solve(n - 1, r, c);
+            }
+            else {
+                return solve(n - 1, r, c - power2(n - 1)) + power2(2 * (n - 1));
+            }
+        }
+        else {
+            if (c < power2(n - 1)) {
+                return solve(n - 1, r - power2(n - 1), c) + power2(2 * (n - 1)) * 2;
+            }
+            else {
+                return solve(n - 1, r - power2(n - 1), c - power2(n - 1)) + power2(2 * (n - 1)) * 3;
+            }
+        }
+    }
+}
+int main() {
+    int n, r, c;
+    while (cin >> n >> r >> c) {
+        cout << solve(n, r, c) << '\n';
+    }
+    return 0;
+}
+
+* 1517번 : https://www.acmicpc.net/problem/1517
+
+#include <cstdio>
+int a[500000];
+int b[500000];
+long long solve(int start, int end) {
+    if (start == end) {
+        return 0;
+    }
+    int mid = (start+end)/2;
+    long long ans = solve(start, mid) + solve(mid+1, end);
+    int i = start;
+    int j = mid+1;
+    int k = 0;
+    while (i <= mid || j <= end) {
+        if (i <= mid && (j > end || a[i] <= a[j])) {
+            b[k++] = a[i++];
+        } else {
+            ans += (long long)(mid-i+1);
+            b[k++] = a[j++];
+        }
+    }
+    for (int i=start; i<=end; i++) {
+        a[i] = b[i-start];
+    }
+    return ans;
+}
+int main() {
+    int n;
+    scanf("%d",&n);
+    for (int i=0; i<n; i++)
+        scanf("%d",&a[i]);
+    long long ans = solve(0, n-1);
+    printf("%lld\n",ans);
+    return 0;
+}
